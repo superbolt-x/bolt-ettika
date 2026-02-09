@@ -28,7 +28,7 @@ vars:
     googleads_conversion_used_by_custom_conversions: 'all_conversions'   # Googleads custom conversions can use conversions or all_conversions
 
     # Shopify vars
-    time_zone: 'US/Eastern'
+    time_zone: 'US/Pacific'
     order_tags_keyword_exclusion: 'dummy' # exclude orders with tags including certain keywords from analytics e.g. 'dummy1|dummy2'
     sales_channel_exclusion: 'dummy' # exclude orders that came from certain sales channels from analytics e.g. 'channel1|channel2'
     shipping_countries_included: 'dummy' # include only orders which shipping country is in the list e.g. 'FR|BE', except if value 'dummy' is left 
