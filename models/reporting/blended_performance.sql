@@ -4,8 +4,8 @@
 
 WITH orders AS (
 
-    SELECT order_id, date as order_date
-    FROM reporting.ettika_shopify_daily_sales_by_order
+    SELECT order_id, created_at as order_date
+    FROM shopify_base.shopify_orders
     WHERE (
         (
             order_tags !~* 'amazon'
@@ -82,7 +82,7 @@ WITH orders AS (
 	LEFT JOIN orders using(order_id)
     WHERE "_fivetran_deleted" = FALSE
       AND type = 'ORDERS_LINEAR_ALL'
-	  and click_date::date >= order_date::date - 28
+	  and click_date >= order_date - 28
 	order by order_id desc, index asc
 
 )
