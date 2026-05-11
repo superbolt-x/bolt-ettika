@@ -232,7 +232,7 @@ WITH orders AS (
 	group by 1,2,3,4,5,6,7,8
 	union all
 	SELECT 'Google Ads' as channel, campaign_id::varchar as campaign_id, campaign_name,
-	ad_group_id::varchar as adset_id, ad_group_name, ad_id::varchar as ad_id, ad_name,
+	ad_group_id::varchar as adset_id, ad_group_name, ad_id::varchar as ad_id, '(not set)' as ad_name,
 	date, sum(spend) as spend, sum(impressions) as impressions, sum(clicks) as clicks
 	FROM reporting.ettika_googleads_ad_performance
 	where date_granularity = 'day'
