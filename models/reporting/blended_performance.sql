@@ -198,7 +198,7 @@ WITH orders AS (
 	group by 1,2,3,4,5,6,7
 	union all
 	SELECT 'Google Ads' as channel, campaign_id::varchar as campaign_id, campaign_name, 
-	ad_group_id::varchar as adset_id, ad_group_name, ad_id::varchar as ad_id, ad_name, count(*) as nb
+	ad_group_id::varchar as adset_id, ad_group_name, ad_id::varchar as ad_id, '(not set)' as ad_name, count(*) as nb
 	FROM reporting.ettika_googleads_ad_performance
 	group by 1,2,3,4,5,6,7
 	union all
