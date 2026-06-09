@@ -66,6 +66,7 @@ WITH orders AS (
             WHEN source = 'facebook-ads' AND campaign_id != '' THEN 'Facebook'
             WHEN source = 'applovin' AND campaign_id != '' THEN 'App Lovin'
             WHEN source = 'google-ads' THEN 'Google Ads'
+			WHEN source = 'tiktok-ads' THEN 'Tiktok'
             ELSE 'Other'
         END AS channel,
 
