@@ -40,7 +40,7 @@ WITH refund_order_data AS (
 
     SELECT 
         order_id,
-		order_date,
+		date as order_date,
 		click_date,
 
         CASE 
@@ -73,7 +73,7 @@ WITH refund_order_data AS (
 		count(*) over (partition by order_id) as order_index
 
     FROM triplewhale_raw.orders_attribution
-	LEFT JOIN (select order_id, order_date FROM reporting.ettika_shopify_daily_sales_by_order) 
+	LEFT JOIN (select order_id, date FROM reporting.ettika_shopify_daily_sales_by_order) 
 	USING(order_id)
     WHERE "_fivetran_deleted" = FALSE
       AND type = 'ORDERS_LINEAR_ALL'
