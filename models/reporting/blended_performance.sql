@@ -2,24 +2,7 @@
     alias = target.database + '_blended_performance'
 )}}
 
-WITH orders AS (
-
-    SELECT order_id, created_at as order_date
-    FROM shopify_base.shopify_orders
-    WHERE (
-        (
-            order_tags !~* 'amazon'
-            AND order_tags !~* 'fbm'
-            AND order_tags !~* 'free sample'
-            AND order_tags !~* 'shopify collective'
-            AND order_tags !~* 'affiliate gift - social snowball'
-        )
-        OR order_tags IS NULL
-    )
-
-)
-
-, refund_order_data AS (
+WITH refund_order_data AS (
 
     -- Sales rows
     SELECT 
@@ -37,7 +20,6 @@ WITH orders AS (
         0 AS shipping_refund,
         0 AS tax_refund
     FROM reporting.ettika_shopify_daily_sales_by_order
-    WHERE order_id IN (SELECT order_id FROM orders)
 
     UNION ALL
 
@@ -51,7 +33,6 @@ WITH orders AS (
         shipping_refund,
         tax_refund
     FROM reporting.ettika_shopify_daily_refunds
-    WHERE order_id IN (SELECT order_id FROM orders)
 
 )
 
