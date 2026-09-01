@@ -15,9 +15,9 @@ audience,
 date,
 date_granularity,
 0 as spend,
-impression_1+impression_2 as impressions,
-clickthrough_1+clickthrough_2 as clicks,
-total_view_add_to_cart+total_click_add_to_cart as add_to_cart,
-total_checkout as purchases,
-total_checkout_value as revenue
+impression_2 as impressions,
+clickthrough_2 as clicks,
+0 as add_to_cart,
+0 as purchases,
+0 as revenue
 FROM {{ ref('pinterest_performance_by_ad_group') }}
