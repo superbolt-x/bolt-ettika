@@ -48,6 +48,7 @@ WITH refund_order_data AS (
             WHEN source = 'applovin' AND campaign_id != '' THEN 'App Lovin'
             WHEN source = 'google-ads' THEN 'Google Ads'
 			WHEN source = 'tiktok-ads' THEN 'Tiktok'
+			WHEN source = 'pinterest-ads' THEN 'Pinterest'
             ELSE 'Other'
         END AS channel,
 
@@ -190,6 +191,11 @@ WITH refund_order_data AS (
 	FROM applovin_raw.advertiser_report
 	WHERE "_fivetran_deleted" = FALSE
 	group by 1,2,3,4,5,6,7
+	union all
+	SELECT 'Pinterest' as channel, '(not set)' as campaign_id, '(not set)' as campaign_name,
+	'(not set)' as adset_id, '(not set)' as adset_name, '(not set)' as ad_id, '(not set)' as ad_name, count(*) as nb
+	FROM reporting.ettika_pinterest_ad_group_performance
+	group by 1,2,3,4,5,6,7
 )
 
 , conversion_data as (
@@ -228,6 +234,14 @@ WITH refund_order_data AS (
 	sum(impressions) as impressions, sum(clicks) as clicks
 	FROM applovin_raw.advertiser_report
 	WHERE "_fivetran_deleted" = FALSE
+	group by 1,2,3,4,5,6,7,8
+	union all
+	SELECT 'Pinterest' as channel, '(not set)' as campaign_id, '(not set)' as campaign_name,
+	'(not set)' as adset_id, '(not set)' as adset_name, '(not set)' as ad_id, '(not set)' as ad_name,
+	date, sum(spend) as spend, sum(impressions) as impressions, sum(clicks) as clicks
+	FROM reporting.ettika_pinterest_ad_group_performance 
+	where date_granularity = 'day'
+	and (spend > 0 or clicks > 0 or impressions > 0)
 	group by 1,2,3,4,5,6,7,8
 )
 
