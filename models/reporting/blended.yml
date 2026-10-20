@@ -1,1 +1,70 @@
 version: 2
+
+models:
+  - name: blended_performance
+    description: >
+      Daily Shopify orders and revenue attributed to channel / campaign / ad set / ad through Triple Whale, joined to
+      platform spend. Grain: date (US/Pacific, the Shopify order date) x channel x campaign x ad set x ad.
+      Two attribution views sit on the same row, so spend is never repeated.
+
+      LINEAR-ALL (the original columns, also exposed as la_*): ORDERS_LINEAR_ALL touchpoints within the 28 days before
+      the order, each order split evenly across its touchpoints, so orders and revenue are fractional. Orders with no
+      touchpoint in the window go to channel Other. Net of refunds.
+
+      TRIPLE ATTRIBUTION (ta28_* for the 28-day window, talt_* for lifetime): 100% credit to the last ad click of each
+      channel (ORDERS_LAST_PLATFORM_CLICK, one touchpoint per platform per order). An order can be credited to several
+      channels, so these columns overlap: never sum ta28_* or talt_* across channels to get total revenue. Orders with
+      no ad touchpoint are not credited. The 28-day window compares Triple Whale's own timestamps as stored (they are
+      store-local wall-clock time labelled UTC; do not convert them). Revenue (ta*_revenue) is gross, the same formula
+      as revenue; the net columns subtract refunds. New customer = customer_order_index 1 in every view; cancelled
+      orders have no index, so they are not counted as new.
+
+      Validated against the Triple Whale Attribution page for Oct 5-11 2026: order counts match exactly (Meta 354,
+      Google 169, Pinterest 23 at 28 days); new-customer counts run 0-3 lower because of the cancelled-order rule.
+    columns:
+      - name: date
+        description: Shopify order date (US/Pacific); refund rows carry the refund date.
+      - name: channel
+        description: Facebook, Google Ads, Pinterest, Tiktok, App Lovin or Other (any non-paid source, or a paid source without a campaign id).
+      - name: net_revenue
+        description: Linear-all net revenue (sales minus refunds), fractional.
+      - name: purchases
+        description: Linear-all orders, fractional.
+      - name: new_purchases
+        description: Linear-all orders from customers with customer_order_index 1.
+      - name: la_orders
+        description: Same as purchases (linear-all, explicit name).
+      - name: la_new_orders
+        description: Same as new_purchases.
+      - name: la_revenue
+        description: Same as revenue (gross).
+      - name: la_new_revenue
+        description: Same as new_revenue (gross).
+      - name: la_net_revenue
+        description: Same as net_revenue.
+      - name: la_net_new_revenue
+        description: Same as net_new_revenue.
+      - name: ta28_orders
+        description: Triple attribution orders, last ad click of the channel within 28 days of the order. Full credit per channel; overlaps across channels.
+      - name: ta28_new_orders
+        description: ta28_orders from customers with customer_order_index 1.
+      - name: ta28_revenue
+        description: Gross revenue of the ta28 orders (gross sales - discounts + tax + shipping).
+      - name: ta28_new_revenue
+        description: ta28_revenue of new customers.
+      - name: ta28_net_revenue
+        description: ta28_revenue minus refunds.
+      - name: ta28_net_new_revenue
+        description: ta28_net_revenue of new customers.
+      - name: talt_orders
+        description: Triple attribution orders with no window limit (lifetime).
+      - name: talt_new_orders
+        description: talt_orders from customers with customer_order_index 1.
+      - name: talt_revenue
+        description: Gross revenue of the lifetime triple attribution orders.
+      - name: talt_new_revenue
+        description: talt_revenue of new customers.
+      - name: talt_net_revenue
+        description: talt_revenue minus refunds.
+      - name: talt_net_new_revenue
+        description: talt_net_revenue of new customers.
